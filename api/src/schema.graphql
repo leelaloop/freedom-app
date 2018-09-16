@@ -1,0 +1,62 @@
+type User {
+  id: ID!
+  name: String
+  description: String
+  friends: [User] @relation(name: "FRIEND", direction: "OUT")
+  ownslocations: [Location] @relation(name: "OWNS", direction: "OUT")
+  manageslocations: [Location] @relation(name: "MANAGES", direction: "OUT")
+  membership: [Location] @relation(name: "MEMBER", direction: "OUT")
+  ownsthings: [Thing] @relation(name: "OWNS", direction: "OUT")
+  managesthings: [Thing] @relation(name: "MANAGES", direction: "OUT")
+  thingaccess: [Thing] @relation(name: "ACCESSES", direction: "OUT")
+  tags: [Tag] @relation(name: "TAG", direction: "OUT")
+  location: [Location] @relation(name: "AT", direction: "OUT")
+  geolocation: String
+}
+
+type Location {
+  id: ID!
+  name: String
+  description: String
+  slack: String
+  wifi: String
+  entrance: String
+  things: [Thing] @relation(name: "AT", direction:"OUT")
+  tags: [Tag] @relation(name: "TAG", direction: "OUT")
+  owner: [User] @relation(name: "OWNS", direction: "IN")
+  managers: [User] @relation(name: "MANAGES", direction: "IN")
+  accesses: [User] @relation(name: "ACCESSES", direction: "IN")
+  numberusers: Int @cypher(statement: "MATCH (this)-[:]->(r:User) RETURN COUNT(r)"
+  numberobjects: Int @cypher(statement: "MATCH (this)-[:]->(r:Object) RETURN COUNT(r)"
+  geolocation: String
+}
+
+type Thing {
+  id: ID!
+  name: String
+  bluetooth: String
+  raspberrypi: String
+  description: String
+  quantity: Int
+  tags: [Tag] @relation(name: "TAG", direction: "OUT")
+  owner: [User] @relation(name: "OWNS", direction: "IN")
+  managers: [User] @relation(name: "MANAGES", direction: "IN")
+  accesses: [User] @relation(name: "ACCESSES", direction: "IN")
+  location: [Location] @relation(name: "AT", direction: "OUT")
+  comprisedof: [Thing] @relation(name: "", direction: "OUT")
+  geolocation: String
+}
+
+type Tag {
+  name: ID!
+  location:[Location] @relation(name: "TAG", direction: "IN")
+  thing: [Thing] @relation(name: "TAG", direction: "IN")
+  user: [User] @relation(name: "TAG", direction: "IN")
+}
+
+type Query {
+  users(id:ID, name:String, tags:String): [User]
+  things(id:ID, name:String, tags:String): [Thing]
+  locations(id:ID, name:String, tags:String): [Location]
+  tags(id:ID, name:String): [Tag]
+}
