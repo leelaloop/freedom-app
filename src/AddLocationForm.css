@@ -1,0 +1,16 @@
+#formArea {
+    position: absolute;
+    background-color: white;
+    z-index: 900;
+  
+    right: 200px;
+    bottom: 200px;
+  }
+
+  #formArea input {
+      z-index: 1003;
+  }
+
+  #formArea button {
+    z-index: 1002;
+}
